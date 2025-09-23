@@ -14,13 +14,33 @@ CORS(app)
 
 #DEFs DE RASPAGEM
 
-
-
-
+def playw(url: str, selector: str):
+    ChatBot = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0'
+    results = {}
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(headless=True)
+        context = browser.new_context(user_agent=ChatBot)
+        page = context.new_page()
+        page.goto(url, timeout=60000)
+        page.wait_for_selector(selector, timeout=30000)
+        close = page.inner_text(selector)
+        page.close()
+        browser.close()
+        return close
 
 # Américas
 def DJI():
     # Estados Unidos - América do Norte
+    url = 'https://www.spglobal.com/spdji/en/indices/equity/dow-jones-industrial-average/#overview'
+    selector = "div.index-level"
+    value = playw(url, selector)
+
+    return {
+        "Indice": "DIJ",
+        "DIJ": value,
+        "Contry": "USD"
+    }
+
     pass
 
 def DJU():
@@ -153,6 +173,10 @@ def WIG():
     # Polônia - Europa
     pass
 
+def GD():
+    # Grécia - Europa
+    pass
+
 def EUROTOP100():
     # Zona Euro - Europa
     pass
@@ -194,6 +218,9 @@ def XAO():
     # Austrália - Oceania
     pass
 
+def JALSH():
+    # África do Sul - África
+    pass
 
 # Criptomoedas
 def ETHUSD_RR():
@@ -205,8 +232,8 @@ def ETHUSD_RTI():
     pass
 
 
-
-
+#DJT
+#IPSA
 
 
 #MEIO (PARTE 1)
@@ -252,6 +279,7 @@ def home():
             "/close/OMXC20",
             "/close/OMXS30",
             "/close/WIG",
+            "/close/GD",
             "/close/EUROTOP100",
             "/close/N100",
             "/close/N150",
@@ -262,6 +290,7 @@ def home():
             "/close/KOSPI",
             "/close/TA125",
             "/close/XAO",
+            "/close/JALSH",
             "/close/ETHUSD_RR",
             "/close/ETHUSD_RTI",
         ]
@@ -278,10 +307,17 @@ def api_close_DJI():
     resultado = DJI()
     return jsonify(resultado)
 
+@app.route('/close/USD', methods=['GET'])
+def api_close_USD():
+    return jsonify({
+        "DJI": DJI(),
+    })
+
+
 @app.route('/close/value', methods=['GET'])
 def api_value():
     return jsonify({
-        "Fechamento": ()
+        "Fechamento": DJI()
     })
 
 #FIM
