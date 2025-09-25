@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Índices Financeiros</title>
+</head>
+<body>
+  <h1>Índices Coletados</h1>
+  <button onclick="carregar()">Carregar dados</button>
+  <div id="resultado"></div>
+
+  <script>
+    async function carregar() {
+      const res = await fetch("dados.json");
+      const data = await res.json();
+
+      let html = "<ul>";
+      for (const [indice, valor] of Object.entries(data)) {
+        html += `<li><b>${indice}:</b> ${valor}</li>`;
+      }
+      html += "</ul>";
+
+      document.getElementById("resultado").innerHTML = html;
+    }
+  </script>
+</body>
+</html>
