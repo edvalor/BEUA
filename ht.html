@@ -13,14 +13,14 @@
   <div id="resultado"></div>
 
   <script>
-     async function carregar() {
+    async function carregar() {
       try {
         const res = await fetch("dados.json");
         if (!res.ok) throw new Error("Erro ao carregar dados.json: " + res.status);
         const data = await res.json();
         let html = "<ul>";
-        for (const [indice, valor] of Object.entries(data)) {
-          html += `<li><b>${indice}:</b> ${valor}</li>`;
+        for (const [indice, info] of Object.entries(data)) {
+          html += `<li><b>${indice}:</b> ${info.valor} <i>(${info.regiao})</i></li>`;
         }
         html += "</ul>";
         document.getElementById("resultado").innerHTML = html;
@@ -38,11 +38,12 @@
         .then(data => {
           const hoje = new Date();
           const dataFormatada = hoje.toLocaleDateString("pt-BR");
-          let linhas = "Indice;Valor;Data\r\n";
-          for (const [indice, valor] of Object.entries(data)) {
+          let linhas = "Indice;Valor;Regiao;Data\r\n";
+          for (const [indice, info] of Object.entries(data)) {
             const safeIndice = String(indice).replace(/"/g, '""');
-            const safeValor = String(valor).replace(/"/g, '""');
-            linhas += `"${safeIndice}";"${safeValor}";"${dataFormatada}"\r\n`;
+            const safeValor = String(info.valor).replace(/"/g, '""');
+            const safeRegiao = String(info.regiao).replace(/"/g, '""');
+            linhas += `"${safeIndice}";"${safeValor}";"${safeRegiao}";"${dataFormatada}"\r\n`;
           }
           const csvComBOM = '\ufeff' + linhas;
           const blob = new Blob([csvComBOM], { type: "text/csv;charset=utf-8;" });
