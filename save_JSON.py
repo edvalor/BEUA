@@ -23,7 +23,10 @@ def coletar_todos(indices, nome_saida):
                 print(f"Coletando {nome}")
                 page.goto(config["url"], timeout=60000)
                 page.wait_for_selector(config["selector"], timeout=30000)
-                resultados[nome] = page.inner_text(config["selector"])
+                resultados[nome] = {
+                    "valor": page.inner_text(config["selector"]),
+                    "regiao": config["regiao"]
+                }
             except Exception as e:
                 resultados[nome] = f"Erro: {str(e)}"
 
@@ -56,6 +59,11 @@ indices = {
         "selector": "div.index-level",
         "regiao": "Américas"
     },
+    "NCI": {
+        "url": "https://www.nasdaq.com/market-activity/index/nci#google_vignette",
+        "selector": "div.nsdq-quote-header__pricing-information-saleprice",
+        "regiao": "Américas"
+    },
     "SP100": {
         "url": "https://www.spglobal.com/spdji/en/indices/equity/sp-100/#overview",
         "selector": "div.index-level",
@@ -73,11 +81,6 @@ indices = {
     },
     "NASDAQ100": {
         "url": "https://www.nasdaq.com/market-activity/index/ndx",
-        "selector": "div.nsdq-quote-header__pricing-information-saleprice",
-        "regiao": "Américas"
-    },
-    "NCI": {
-        "url": "https://www.nasdaq.com/market-activity/index/nci#google_vignette",
         "selector": "div.nsdq-quote-header__pricing-information-saleprice",
         "regiao": "Américas"
     },
