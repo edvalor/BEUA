@@ -1,27 +1,67 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>Índices Financeiros</title>
 </head>
+
 <body>
   <h1>Índices Coletados</h1>
   <button onclick="carregar()">Carregar dados</button>
+  <button onclick="baixarCSV()">Baixar CSV</button>
   <div id="resultado"></div>
 
   <script>
-    async function carregar() {
-      const res = await fetch("dados.json");
-      const data = await res.json();
-
-      let html = "<ul>";
-      for (const [indice, valor] of Object.entries(data)) {
-        html += `<li><b>${indice}:</b> ${valor}</li>`;
+     async function carregar() {
+      try {
+        const res = await fetch("dados.json");
+        if (!res.ok) throw new Error("Erro ao carregar dados.json: " + res.status);
+        const data = await res.json();
+        let html = "<ul>";
+        for (const [indice, valor] of Object.entries(data)) {
+          html += `<li><b>${indice}:</b> ${valor}</li>`;
+        }
+        html += "</ul>";
+        document.getElementById("resultado").innerHTML = html;
+      } catch (err) {
+        document.getElementById("resultado").innerText = "Erro: " + err.message;
+        console.error(err);
       }
-      html += "</ul>";
+    }
+    function baixarCSV() {
+      fetch("dados.json")
+        .then(res => {
+          if (!res.ok) throw new Error("Erro ao acessar dados.json: " + res.status);
+          return res.json();
+        })
+        .then(data => {
+          const hoje = new Date();
+          const dataFormatada = hoje.toLocaleDateString("pt-BR");
+          let linhas = "Indice;Valor;Data\r\n";
+          for (const [indice, valor] of Object.entries(data)) {
+            const safeIndice = String(indice).replace(/"/g, '""');
+            const safeValor = String(valor).replace(/"/g, '""');
+            linhas += `"${safeIndice}";"${safeValor}";"${dataFormatada}"\r\n`;
+          }
+          const csvComBOM = '\ufeff' + linhas;
+          const blob = new Blob([csvComBOM], { type: "text/csv;charset=utf-8;" });
+          const downloadUrl = URL.createObjectURL(blob);
 
-      document.getElementById("resultado").innerHTML = html;
+          const a = document.createElement("a");
+          a.href = downloadUrl;
+          a.download = "dados.csv";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(downloadUrl);
+        })
+        .catch(err => {
+          alert("Erro ao gerar CSV: " + err.message);
+          console.error(err);
+        });
     }
   </script>
 </body>
+
 </html>
