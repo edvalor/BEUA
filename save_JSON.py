@@ -55,8 +55,8 @@ indices = {
         "regiao": "Américas"
     },
     "DJU": {
-        "url": "https://www.spglobal.com/spdji/en/indices/equity/dow-jones-utilities/#overview",
-        "selector": "div.index-level",
+        "url": "https://br.tradingview.com/symbols/DJ-DJU/",
+        "selector": "span.last-zoF9r75I.js-symbol-last",
         "regiao": "Américas"
     },
     "NCI": {
@@ -310,3 +310,4 @@ if __name__ == "__main__":
             if resposta != "y":
                 print("Saindo...")
                 break
+
