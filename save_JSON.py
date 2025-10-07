@@ -1,10 +1,8 @@
 # BIBLIOTECAS
-import os
 from datetime import date
 import json
-from flask_cors import CORS
 from playwright.sync_api import sync_playwright
-from flask import Flask, jsonify
+
 
 # FUNÇÃO PRINCIPAL DE RASPAGEM
 
@@ -310,4 +308,3 @@ if __name__ == "__main__":
             if resposta != "y":
                 print("Saindo...")
                 break
-
